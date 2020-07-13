@@ -1,0 +1,16 @@
+[package]
+name = "qqt-project"
+version = "0.1.0"
+authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
+edition = "2018"
+
+[workspace]
+members = [
+    "qqt",
+    "qqt-dataset"
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
