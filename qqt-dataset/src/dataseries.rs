@@ -2,7 +2,7 @@ use crate::datavalue::{DataValue, Number};
 use std::ops::Index;
 use std::f64::NAN;
 
-struct DataSeries {
+pub struct DataSeries {
     data: Vec<DataValue>,
 }
 
@@ -116,6 +116,10 @@ impl DataSeries {
         }
 
         data
+    }
+
+    pub fn add_row(&mut self, value: &str) {
+        self.data.push(DataValue::new(value));
     }
 }
 
@@ -261,5 +265,15 @@ mod tests {
         let stddev_s = s1.stddev_s();
 
         assert_eq!(stddev_s, 3.0276503540974917);
+    }
+
+    #[test]
+    fn test_add_row() {
+        let mut s1 = DataSeries::new(10);
+
+        s1.add_row("11");
+
+        assert_eq!(s1.len(), 11);
+        assert_eq!(s1[10].raw(), "11");
     }
 }
