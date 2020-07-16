@@ -2,6 +2,7 @@ use anyhow::Result;
 use qqt_dataset::dataset::DataSet;
 use csv::{ReaderBuilder, Terminator};
 use std::io::{BufReader, BufRead};
+use std::fs::read_to_string;
 
 #[derive(Clone)]
 pub struct Options {
@@ -86,6 +87,12 @@ pub fn text_to_dataset(text: &str, options: &Options) -> Result<DataSet> {
     Ok(ds)
 }
 
+pub fn load_file(file_name: &str, options: &Options) -> Result<DataSet> {
+    let content = read_to_string(file_name)?;
+
+    text_to_dataset(&content, options)
+}
+
 pub fn load_http(url: &str) -> Result<DataSet> {
     let mut ds = DataSet::new(vec![], 0);
 
@@ -94,7 +101,7 @@ pub fn load_http(url: &str) -> Result<DataSet> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{load_http, Options, text_to_dataset};
+    use crate::{load_http, Options, text_to_dataset, load_file};
 
     #[test]
     fn test_text_to_dataset() {
@@ -226,6 +233,23 @@ mod tests {
         assert_eq!(ds.at(2, 2).value(), 9.0);
     }
 
+    #[test]
+    fn test_load_file() {
+        let ds = load_file("tests/test.csv", &Options::new()).unwrap();
+
+        assert_eq!(ds.col_label(0), "A");
+        assert_eq!(ds.col_label(1), "B");
+        assert_eq!(ds.col_label(2), "C");
+        assert_eq!(ds.at(0, 0).value(), 1.0);
+        assert_eq!(ds.at(0, 1).value(), 2.0);
+        assert_eq!(ds.at(0, 2).value(), 3.0);
+        assert_eq!(ds.at(1, 0).value(), 4.0);
+        assert_eq!(ds.at(1, 1).value(), 5.0);
+        assert_eq!(ds.at(1, 2).value(), 6.0);
+        assert_eq!(ds.at(2, 0).value(), 7.0);
+        assert_eq!(ds.at(2, 1).value(), 8.0);
+        assert_eq!(ds.at(2, 2).value(), 9.0);
+    }
 
 
     // #[test]
